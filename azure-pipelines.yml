@@ -11,6 +11,8 @@ pr:
 
 pool:
   vmImage: 'windows-latest'
+  demands:
+    parallel: 1 
 
 steps:
 - task: UsePythonVersion@0
