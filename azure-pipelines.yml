@@ -6,20 +6,17 @@
 trigger:
 - main
 
+pr: 
+- '*'
+
 pool:
-  vmImage: windows-latest
-strategy:
-  matrix:
-    Python36:
-      python.version: '3.6'
-    Python37:
-      python.version: '3.7'
+  vmImage: 'windows-latest'
 
 steps:
 - task: UsePythonVersion@0
   inputs:
-    versionSpec: '$(python.version)'
-  displayName: 'Use Python $(python.version)'
+    versionSpec: '3.x'  # Use the latest version of Python 3 available on the agent
+  displayName: 'Use Python 3.x'
 
 - script: |
     python -m pip install --upgrade pip
@@ -30,4 +27,19 @@ steps:
     pip install pytest pytest-azurepipelines
     pytest
   displayName: 'pytest'
-  
+
+- script: |
+    # Add your ML deployment commands here
+    # For example, if you're using Azure ML, you might have commands to deploy your model.
+    # You may also need to set up authentication and environment variables.
+  displayName: 'Deploy ML Code'
+
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: '$(Build.ArtifactStagingDirectory)'
+    artifact: 'MLCode'  # Set a meaningful name for your artifact
+  displayName: 'Publish ML Code Artifact'
+
+- script: |
+    # Add any additional deployment steps here, such as deploying to a web service or a cloud platform.
+  displayName: 'Additional Deployment Steps'
